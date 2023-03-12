@@ -5,16 +5,14 @@
 
 from sanic import Sanic, response
 import subprocess
-from model import * 
 from PIL import Image
 from io import BytesIO
 import base64
-
+import app as user_src
 
 # We do the model load-to-GPU step on server startup
 # so the model object is available globally for reuse
-# user_src.init()
-model = ONNX( "./onnx/fish_classifier.onnx")
+user_src.init()
 
 # Create the http server app
 server = Sanic("my_app")
@@ -37,8 +35,8 @@ def inference(request):
         model_inputs = response.json.loads(request.json)
     except:
         model_inputs = request.json
-    img =   Image.open(BytesIO(base64.b64decode(model_inputs['image'])))
-    output = model.predict(img)
+    
+    output = user_src.inference(model_inputs)
     result = {"predicted_class" : output}
 
     return response.json(result)
