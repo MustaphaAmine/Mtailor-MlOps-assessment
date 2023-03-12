@@ -10,8 +10,7 @@ from PIL import Image
 # this class defines the function to preprocess the image before send passing it to the model 
 class image_preprocession():    
 
-    def preprocess_numpy(self,image_url):
-        img = Image.open(image_url)
+    def preprocess_numpy(self,img):
         resize = transforms.Resize((224, 224))   #must same as here
         crop = transforms.CenterCrop((224, 224))
         to_tensor = transforms.ToTensor()
@@ -31,17 +30,11 @@ class ONNX():
     def __init__(self, model_url) -> None:
         self.model = onnxruntime.InferenceSession(model_url) 
 
-    def predict(self,image_url): 
+    def predict(self,img): 
         image_prepo_inst = image_preprocession()
-        inp = image_prepo_inst.preprocess_numpy(image_url)
+        inp = image_prepo_inst.preprocess_numpy(img)
         
         ort_inputs = {self.model.get_inputs()[0].name: inp}
         ort_outs = self.model.run(None, ort_inputs)
         res = np.array(ort_outs[0][0])
         return np.argmax(res)
-
-
-
-if __name__ == "__main__":
-    model = ONNX( "./onnx/fish_classifier.onnx")
-    print(model.predict("./pictures/n01440764_tench.jpeg"))
