@@ -16,7 +16,7 @@ with open("./pictures/n01440764_tench.jpeg", "rb") as image_file:
     "prompt": image_base64.decode("utf-8")
     }
 
-    # those are not the real access keys as I didn't have enough time to actually deploy the code to banana dev server
+    # those are actual coordinates 
     api_key = "50b394ec-b2be-4221-b12d-9506ee917214"
     model_key = "c6b64c7d-ab74-4d0f-817c-9417a1fd0386"
 
